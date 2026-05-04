@@ -47,6 +47,30 @@ bash scripts/run_pwm_sweep.sh
 
 前後方向が逆の場合は [src/config.py](src/config.py) の `A_MOTOR_REVERSED` / `B_MOTOR_REVERSED` で調整してください。現在はAモーターのみ取り付け向き補正のため `A_MOTOR_REVERSED = True` です。
 
+## PS3 Controller
+
+PS3コントローラーはBluetooth無線接続後に操作します。初回ペアリング時のみUSB接続が必要になる場合がありますが、有線USBは操作用ではなくペアリング用として扱います。
+
+まずBluetooth環境と入力デバイスの状態を確認します。
+
+```bash
+bash scripts/check_bluetooth.sh
+```
+
+PS3コントローラーをBluetooth接続した後、入力確認だけを実行します。この段階ではモーターは動きません。
+
+```bash
+bash scripts/run_ps3_event_test.sh
+```
+
+ボタン入力とスティック入力が確認できたら、必ず車輪を浮かせた状態でBluetooth接続後の低速モーター制御を実行します。
+
+```bash
+bash scripts/run_ps3_motor_drive.sh
+```
+
+詳しい操作と注意点は [docs/CONTROLLER.md](docs/CONTROLLER.md) を参照してください。
+
 ## Test Sequence
 
 1. 左モーター前進 2.0秒
