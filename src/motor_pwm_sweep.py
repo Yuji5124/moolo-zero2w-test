@@ -1,19 +1,18 @@
-"""Run the initial single-motor test sequence."""
+"""Run PWM sweep tests for each motor."""
 
 from time import sleep
 
 from config import (
-    A_MOTOR_REVERSED,
-    B_MOTOR_REVERSED,
-    DEFAULT_TEST_SPEED,
     LEFT_MOTOR_BACKWARD_PIN,
     LEFT_MOTOR_FORWARD_PIN,
     RIGHT_MOTOR_BACKWARD_PIN,
     RIGHT_MOTOR_FORWARD_PIN,
-    STEP_DURATION_SECONDS,
     STOP_DURATION_SECONDS,
 )
 from motor_driver import MotorDriver
+
+SWEEP_SPEEDS = (0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0)
+SWEEP_DURATION_SECONDS = 2.0
 
 
 def stop_pause(driver: MotorDriver) -> None:
@@ -28,11 +27,20 @@ def print_test_config() -> None:
     print(f"  Left backward GPIO{LEFT_MOTOR_BACKWARD_PIN} -> AIN2")
     print(f"  Right forward GPIO{RIGHT_MOTOR_FORWARD_PIN} -> BIN1")
     print(f"  Right backward GPIO{RIGHT_MOTOR_BACKWARD_PIN} -> BIN2")
-    print(f"A_MOTOR_REVERSED: {A_MOTOR_REVERSED}")
-    print(f"B_MOTOR_REVERSED: {B_MOTOR_REVERSED}")
-    print(f"Speed: {DEFAULT_TEST_SPEED}")
-    print(f"Move duration: {STEP_DURATION_SECONDS} seconds")
+    print(f"Speeds: {', '.join(str(speed) for speed in SWEEP_SPEEDS)}")
+    print(f"Move duration: {SWEEP_DURATION_SECONDS} seconds")
     print(f"Stop duration: {STOP_DURATION_SECONDS} seconds")
+
+
+def sweep_motor(driver: MotorDriver, motor_name: str) -> None:
+    for speed in SWEEP_SPEEDS:
+        print(f"{motor_name} motor forward at speed {speed} for {SWEEP_DURATION_SECONDS} seconds")
+        if motor_name == "Left":
+            driver.left_forward(speed)
+        else:
+            driver.right_forward(speed)
+        sleep(SWEEP_DURATION_SECONDS)
+        stop_pause(driver)
 
 
 def run_test() -> None:
@@ -40,25 +48,8 @@ def run_test() -> None:
 
     try:
         print_test_config()
-
-        print(f"Left motor forward for {STEP_DURATION_SECONDS} seconds")
-        driver.left_forward(DEFAULT_TEST_SPEED)
-        sleep(STEP_DURATION_SECONDS)
-        stop_pause(driver)
-
-        print(f"Left motor backward for {STEP_DURATION_SECONDS} seconds")
-        driver.left_backward(DEFAULT_TEST_SPEED)
-        sleep(STEP_DURATION_SECONDS)
-        stop_pause(driver)
-
-        print(f"Right motor forward for {STEP_DURATION_SECONDS} seconds")
-        driver.right_forward(DEFAULT_TEST_SPEED)
-        sleep(STEP_DURATION_SECONDS)
-        stop_pause(driver)
-
-        print(f"Right motor backward for {STEP_DURATION_SECONDS} seconds")
-        driver.right_backward(DEFAULT_TEST_SPEED)
-        sleep(STEP_DURATION_SECONDS)
+        sweep_motor(driver, "Left")
+        sweep_motor(driver, "Right")
 
     except KeyboardInterrupt:
         print("Interrupted. Stopping motors.")

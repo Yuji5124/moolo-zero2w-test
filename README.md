@@ -35,15 +35,25 @@ bash scripts/install_pi.sh
 bash scripts/run_motor_test.sh
 ```
 
+まず `scripts/run_motor_test.sh` を実行してください。動きが見えにくい場合は `scripts/run_pwm_sweep.sh` で最低動作PWMを確認してください。
+
+```bash
+bash scripts/run_pwm_sweep.sh
+```
+
+今回の実機ではA/BともにPWM 0.2から回転確認済みです。
+
 初期テスト速度は `0.2` です。変更する場合は [src/config.py](src/config.py) の `DEFAULT_TEST_SPEED` を編集してください。
+
+前後方向が逆の場合は [src/config.py](src/config.py) の `A_MOTOR_REVERSED` / `B_MOTOR_REVERSED` で調整してください。現在はAモーターのみ取り付け向き補正のため `A_MOTOR_REVERSED = True` です。
 
 ## Test Sequence
 
-1. 左モーター前進 0.5秒
+1. 左モーター前進 2.0秒
 2. 停止 1秒
-3. 左モーター後退 0.5秒
+3. 左モーター後退 2.0秒
 4. 停止 1秒
-5. 右モーター前進 0.5秒
+5. 右モーター前進 2.0秒
 6. 停止 1秒
-7. 右モーター後退 0.5秒
+7. 右モーター後退 2.0秒
 8. 完全停止

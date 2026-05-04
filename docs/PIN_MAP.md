@@ -10,3 +10,9 @@ GPIO番号は BCM 番号です。
 | RIGHT_MOTOR_BACKWARD_PIN | 19 | BIN2 | 右モーター後退側 |
 
 Python側の定義は [src/config.py](../src/config.py) にまとめています。
+
+## Motor Direction
+
+Aモーターは車体への取り付け向きが逆のため、コード側で `A_MOTOR_REVERSED = True` として補正しています。
+
+配線変更ではなくソフトウェア側で反転します。Bモーターは `B_MOTOR_REVERSED = False` のまま現状維持です。
