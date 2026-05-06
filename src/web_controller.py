@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from motor_driver import MotorDriver  # noqa: E402
 
 MIN_SPEED = 0.5
-MAX_SPEED = 0.8
+MAX_SPEED = 1.0
 WATCHDOG_TIMEOUT = 0.5  # seconds; stop if no command received
 DRIVE_INTERVAL_MS = 200  # JS resends drive command every 200 ms
 
@@ -273,7 +273,7 @@ _HTML_PAGE = """<!DOCTYPE html>
       <span>速度</span>
       <span id="speed-disp">0.50</span>
     </div>
-    <input id="speed-slider" type="range" min="50" max="80" value="50" step="1">
+    <input id="speed-slider" type="range" min="50" max="100" value="50" step="1">
   </div>
 
   <div class="dpad">
