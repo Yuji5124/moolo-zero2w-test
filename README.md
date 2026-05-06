@@ -81,8 +81,20 @@ http://<Pi の IP アドレス>:8080
 - ▲ / ▼ / ◄ / ► ボタンを**押している間**だけ動きます。
 - 指を離すと停止します。
 - STOP ボタンで即時停止します。
-- 速度スライダーで速度を調整できます（最大 0.5）。
+- 速度スライダーで速度を調整できます（0.5〜1.0）。
 - ページを閉じたり通信が途切れた場合も自動停止します。
+
+### 走行確認状況
+
+スマホ Web コントローラーによる Moolo の走行は成功済みです（Wi-Fi 経由・球体ケース収納状態）。
+
+ただし、**左右旋回の方向は実機テストで必ず確認してください**。球体ロボットの内部機構の向きによっては、`turn_left` / `turn_right` の物理的な挙動が期待と異なる場合があります。必要に応じて `src/motor_driver.py` の `turn_left()` / `turn_right()` 内のモーター指示を入れ替えるか、`config.py` の `A_MOTOR_REVERSED` / `B_MOTOR_REVERSED` を調整してください。
+
+方向確認には専用テストスクリプトを使用してください。
+
+```bash
+bash scripts/run_drive_direction_test.sh
+```
 
 詳しくは [docs/WEB_CONTROLLER.md](docs/WEB_CONTROLLER.md) を参照してください。
 

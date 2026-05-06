@@ -79,3 +79,51 @@
 3. 指を離すと停止する
 4. ページを閉じると停止する
 5. 床置き低速テスト
+
+## 2026-05-06 Phase 5 実機テスト結果
+
+### 成功
+
+- スマホ Web コントローラーによる Moolo 走行成功。
+- Wi-Fi 経由でスマホブラウザから操作できた。
+- Raspberry Pi Zero 2 W → DRV8835-S → 左右モーター制御の経路が動作確認できた。
+- 球体ケース内に電子部品と電池を収めた状態で走行確認できた。
+- Bluetooth コントローラー方式ではなく、Web コントローラー方式が有効と判断。
+
+### 実機で確認した問題
+
+| 操作 | 期待する挙動 | 実際の挙動 |
+|------|-------------|-----------|
+| 左ボタン | 左旋回 | まっすぐ進む |
+| 右ボタン | 右旋回 | 後ろに進む |
+
+### 原因分析
+
+コードのマッピングを確認した結果、以下はすべて正しく実装済みだった。
+
+- `web_controller.py`: `"left"` → `motor.turn_left()`, `"right"` → `motor.turn_right()` ✓
+- `motor_driver.py`: `turn_left` = left_backward + right_forward ✓
+- `motor_driver.py`: `turn_right` = left_forward + right_backward ✓
+
+GPIO ピンレベルでの出力は以下の通り。
+
+| 動作 | AIN1(GPIO5) | AIN2(GPIO6) | BIN1(GPIO13) | BIN2(GPIO19) |
+|------|-------------|-------------|--------------|--------------|
+| forward | 0 | speed | speed | 0 |
+| backward | speed | 0 | 0 | speed |
+| turn_left | speed | 0 | speed | 0 |
+| turn_right | 0 | speed | 0 | speed |
+
+`turn_left` は AIN1・BIN1 が同時に ON になる組み合わせであり、球体内部の物理的な機構（モーター配置・ケース形状）によっては、内部の差動回転が球体の直進方向への転がりとして現れる可能性がある。コード自体にバグはない。
+
+### 対応
+
+- `src/drive_direction_test.py` を追加し、各方向の意図とモーター論理を明示したうえで実機で挙動を確認できるようにした。
+- `scripts/run_drive_direction_test.sh` を追加した。
+- 物理挙動が期待と異なる場合は `motor_driver.py` の `turn_left` / `turn_right` 内のモーター指示を入れ替えることで調整できる。
+
+### 次の確認項目
+
+1. `bash scripts/run_drive_direction_test.sh` で各方向の実機挙動を確認する
+2. 左右旋回が期待通りかチェックし、必要なら `turn_left` / `turn_right` のモーター割り当てを入れ替える
+3. 方向が確定したら床置き低速テストを実施する
