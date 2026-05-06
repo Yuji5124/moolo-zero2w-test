@@ -13,7 +13,8 @@ from flask import Flask, jsonify, request
 sys.path.insert(0, str(Path(__file__).parent))
 from motor_driver import MotorDriver  # noqa: E402
 
-MAX_SPEED = 0.5
+MIN_SPEED = 0.5
+MAX_SPEED = 0.8
 WATCHDOG_TIMEOUT = 0.5  # seconds; stop if no command received
 DRIVE_INTERVAL_MS = 200  # JS resends drive command every 200 ms
 
@@ -23,7 +24,7 @@ motor = MotorDriver()
 _lock = threading.Lock()
 _last_command_time = time.monotonic()
 _current_direction = "stop"
-_current_speed = 0.2
+_current_speed = MIN_SPEED
 _watchdog_running = True
 
 
@@ -66,8 +67,8 @@ def _clamp_speed(value: object) -> float:
     try:
         speed = float(value)  # type: ignore[arg-type]
     except (TypeError, ValueError):
-        speed = 0.2
-    return max(0.0, min(MAX_SPEED, speed))
+        speed = MIN_SPEED
+    return max(MIN_SPEED, min(MAX_SPEED, speed))
 
 
 def _get_local_ips() -> list:
@@ -105,7 +106,7 @@ def api_drive():
     global _last_command_time, _current_direction, _current_speed
     data = request.get_json(silent=True) or {}
     direction = str(data.get("direction", "stop"))
-    speed = _clamp_speed(data.get("speed", 0.2))
+    speed = _clamp_speed(data.get("speed", MIN_SPEED))
 
     with _lock:
         _last_command_time = time.monotonic()
@@ -270,9 +271,9 @@ _HTML_PAGE = """<!DOCTYPE html>
   <div class="speed-wrap">
     <div class="speed-label">
       <span>速度</span>
-      <span id="speed-disp">0.20</span>
+      <span id="speed-disp">0.50</span>
     </div>
-    <input id="speed-slider" type="range" min="0" max="50" value="20" step="1">
+    <input id="speed-slider" type="range" min="50" max="80" value="50" step="1">
   </div>
 
   <div class="dpad">
