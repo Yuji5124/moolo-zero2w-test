@@ -15,6 +15,6 @@ sudo apt-get install -y \
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install gpiozero lgpio evdev
+python -m pip install gpiozero lgpio evdev flask
 
 echo "Install complete. Activate with: source .venv/bin/activate"

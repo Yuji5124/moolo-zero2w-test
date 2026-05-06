@@ -47,6 +47,45 @@ bash scripts/run_pwm_sweep.sh
 
 前後方向が逆の場合は [src/config.py](src/config.py) の `A_MOTOR_REVERSED` / `B_MOTOR_REVERSED` で調整してください。現在はAモーターのみ取り付け向き補正のため `A_MOTOR_REVERSED = True` です。
 
+## Smartphone Web Controller
+
+Bluetooth 接続が不安定な場合は、Wi-Fi 経由のスマホ Web コントローラーを使用できます。
+
+> **最初は必ず車輪を浮かせてテストしてください。**
+
+### 起動方法
+
+```bash
+bash scripts/run_web_controller.sh
+```
+
+### アクセス方法
+
+1. Pi とスマホを同じ Wi-Fi に接続します。
+2. Pi 側で IP アドレスを確認します。
+
+```bash
+hostname -I
+```
+
+3. スマホのブラウザで次の URL を開きます。
+
+```
+http://<Pi の IP アドレス>:8080
+```
+
+例：`http://192.168.128.193:8080`
+
+### 操作
+
+- ▲ / ▼ / ◄ / ► ボタンを**押している間**だけ動きます。
+- 指を離すと停止します。
+- STOP ボタンで即時停止します。
+- 速度スライダーで速度を調整できます（最大 0.5）。
+- ページを閉じたり通信が途切れた場合も自動停止します。
+
+詳しくは [docs/WEB_CONTROLLER.md](docs/WEB_CONTROLLER.md) を参照してください。
+
 ## PS3 Controller
 
 PS3コントローラーはBluetooth無線接続後に操作します。初回ペアリング時のみUSB接続が必要になる場合がありますが、有線USBは操作用ではなくペアリング用として扱います。
